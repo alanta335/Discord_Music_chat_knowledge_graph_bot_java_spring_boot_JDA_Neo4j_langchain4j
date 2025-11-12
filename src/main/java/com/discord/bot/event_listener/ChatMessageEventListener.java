@@ -1,7 +1,8 @@
 package com.discord.bot.event_listener;
 
-import com.discord.bot.service.GuildMusicManager;
-import com.discord.bot.service.MusicService;
+import com.discord.bot.feature_chat.ChatService;
+import com.discord.bot.feature_music.service.GuildMusicManager;
+import com.discord.bot.feature_music.service.MusicService;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
@@ -23,7 +24,7 @@ import org.springframework.stereotype.Component;
 public class ChatMessageEventListener extends ListenerAdapter {
     private final AudioPlayerManager audioPlayerManager;
     private final MusicService musicService;
-
+    private final ChatService chatService;
 //    @Override
 //    public void onMessageReceived(MessageReceivedEvent event) {
 //        if (event.getAuthor().isBot()) return;
@@ -47,6 +48,7 @@ public class ChatMessageEventListener extends ListenerAdapter {
                 case "stop" -> handleStopCommand(event);
                 case "queue" -> handleQueueCommand(event);
                 case "ping" -> handlePingCommand(event);
+                case "ask" -> handleAskCommand(event);
                 default -> {
                     log.warn("Unknown command: {}", commandName);
                     event.reply("Unknown command: " + commandName).setEphemeral(true).queue();
@@ -56,6 +58,12 @@ public class ChatMessageEventListener extends ListenerAdapter {
             log.error("Error handling slash command: {}", event.getName(), e);
             event.reply("An error occurred while processing your command.").setEphemeral(true).queue();
         }
+    }
+
+    private void handleAskCommand(SlashCommandInteractionEvent event) {
+        event.deferReply().queue();
+        final String answer = chatService.getAnswerToQuestion(event);
+        event.getHook().sendMessage(answer).queue();
     }
 
     private void handlePlayCommand(SlashCommandInteractionEvent event) {
@@ -71,9 +79,9 @@ public class ChatMessageEventListener extends ListenerAdapter {
             return;
         }
 
-        VoiceChannel voiceChannel = member.getVoiceState() != null ? 
-            (VoiceChannel) member.getVoiceState().getChannel() : null;
-        
+        VoiceChannel voiceChannel = member.getVoiceState() != null ?
+                (VoiceChannel) member.getVoiceState().getChannel() : null;
+
         if (voiceChannel == null) {
             event.reply("You need to be in a voice channel to use this command.").setEphemeral(true).queue();
             return;
@@ -88,7 +96,7 @@ public class ChatMessageEventListener extends ListenerAdapter {
         // Set up music manager and connect to voice channel
         GuildMusicManager musicManager = musicService.getOrCreateMusicManager(guild);
         AudioManager audioManager = guild.getAudioManager();
-        
+
         audioManager.setSendingHandler(musicManager.getSendHandler());
         audioManager.openAudioConnection(voiceChannel);
 
@@ -169,5 +177,6 @@ public class ChatMessageEventListener extends ListenerAdapter {
         long gatewayPing = event.getJDA().getGatewayPing();
         event.reply("🏓 Pong! Gateway ping: " + gatewayPing + "ms").queue();
         log.info("Ping command executed, gateway ping: {}ms", gatewayPing);
+        chatService.fetchAllMessages(event.getChannel().asTextChannel());
     }
 }

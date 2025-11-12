@@ -49,10 +49,10 @@ public class JdaConfig {
                     .setEnabledIntents(intents);
 
             JDA jda = builder.build();
-            
+
             // Register slash commands
             registerSlashCommands(jda);
-            
+
             log.info("JDA initialized successfully");
             return jda;
         } catch (Exception e) {
@@ -65,16 +65,18 @@ public class JdaConfig {
         try {
             CommandListUpdateAction commands = jda.updateCommands();
             commands.addCommands(
-                Commands.slash("play", "Play a song or add it to the queue")
-                    .addOption(OptionType.STRING, "song", "Song name or URL", true),
-                Commands.slash("skip", "Skip the current song"),
-                Commands.slash("stop", "Stop the music and clear the queue"),
-                Commands.slash("queue", "Show the current queue"),
-                Commands.slash("ping", "Check if the bot is responding")
+                    Commands.slash("play", "Play a song or add it to the queue")
+                            .addOption(OptionType.STRING, "song", "Song name or URL", true),
+                    Commands.slash("skip", "Skip the current song"),
+                    Commands.slash("stop", "Stop the music and clear the queue"),
+                    Commands.slash("queue", "Show the current queue"),
+                    Commands.slash("ping", "Check if the bot is responding"),
+                    Commands.slash("ask", "Ask a question to the bot")
+                            .addOption(OptionType.STRING, "question", "Your question", true)
             );
             commands.queue(
-                success -> log.info("Successfully registered {} slash commands", success.size()),
-                error -> log.error("Failed to register slash commands", error)
+                    success -> log.info("Successfully registered {} slash commands", success.size()),
+                    error -> log.error("Failed to register slash commands", error)
             );
         } catch (Exception e) {
             log.error("Error registering slash commands", e);

@@ -1,14 +1,16 @@
 package com.discord.bot;
 
-import com.discord.bot.service.MusicService;
+import com.discord.bot.feature_music.service.MusicService;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.JDA;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.context.ConfigurableApplicationContext;
 
 @Slf4j
 @SpringBootApplication
+@ConfigurationPropertiesScan("com.discord.bot.properties")
 public class BotApplication {
 
     public static void main(String[] args) {

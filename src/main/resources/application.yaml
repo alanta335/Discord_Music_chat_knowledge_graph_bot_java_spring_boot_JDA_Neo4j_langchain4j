@@ -1,0 +1,37 @@
+spring:
+  application:
+    name: discord-music-bot
+  neo4j:
+    uri: bolt://localhost:7687
+    authentication:
+      username: neo4j
+      password: YourStrongPasswordHere
+  data:
+    neo4j:
+      database: neo4j
+
+# Discord Bot Configuration
+discord:
+  token: ${DISCORD_BOT_TOKEN}
+
+# Audio Configuration
+audio:
+  frame-buffer-duration: 10000
+  item-loader-thread-pool-size: 10
+
+# Logging Configuration
+logging:
+  level:
+    com.discord.bot: INFO
+    net.dv8tion.jda: WARN
+    com.sedmelluq.discord.lavaplayer: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+# Server Configuration
+server:
+  port: 8080
+
+ai:
+  api_key: ${OPENAI_API_KEY}

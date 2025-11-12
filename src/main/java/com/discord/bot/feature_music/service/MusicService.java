@@ -1,4 +1,4 @@
-package com.discord.bot.service;
+package com.discord.bot.feature_music.service;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import lombok.RequiredArgsConstructor;
