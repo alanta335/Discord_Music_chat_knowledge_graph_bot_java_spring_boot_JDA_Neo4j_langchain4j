@@ -183,11 +183,12 @@ public class ChatMessageEventListener extends ListenerAdapter {
     private void handleFetchCommand(SlashCommandInteractionEvent event) {
         event.deferReply().queue();
         try {
-            if (event.getChannel() == null || !event.getChannel().getType().isMessage()) {
+            event.getChannel();
+            if (!event.getChannel().getType().isMessage()) {
                 event.getHook().sendMessage("❌ This command can only be used in a text channel.").queue();
                 return;
             }
-            
+
             chatService.fetchAllMessages(event.getChannel().asTextChannel());
             event.getHook().sendMessage("✅ Successfully fetched all messages from this channel.").queue();
             log.info("Fetch command executed by user: {}", event.getUser().getName());
