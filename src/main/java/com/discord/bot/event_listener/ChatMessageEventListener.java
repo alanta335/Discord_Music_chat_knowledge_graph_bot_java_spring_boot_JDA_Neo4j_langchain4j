@@ -89,7 +89,7 @@ public class ChatMessageEventListener extends ListenerAdapter {
         }
 
         String query = event.getOption("song").getAsString();
-        if (query == null || query.trim().isEmpty()) {
+        if (query.trim().isEmpty()) {
             event.reply("Please provide a song name or URL.").setEphemeral(true).queue();
             return;
         }

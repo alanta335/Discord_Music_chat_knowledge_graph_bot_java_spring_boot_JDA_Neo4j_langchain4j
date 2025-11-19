@@ -67,7 +67,8 @@ public class KGService {
 
     public String searchAnswerFromGraph(final String question, final String userName) {
         Query query = new Query(question);
-        List<Content> contents = neo4jText2CypherRetriever.retrieve(query);
+        List<Content> contents = neo4jText2CypherRetriever
+                .retrieve(query);
         return friendlyAnswerAgent.formatAnswer(question, contents.toString(), userName);
     }
 
